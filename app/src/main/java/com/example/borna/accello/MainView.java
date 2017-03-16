@@ -142,12 +142,6 @@ public class MainView extends SurfaceView implements Runnable {
 
     }
 
-    public void start() {
-        running = true;
-        drawingThread = new Thread(this);
-        drawingThread.start();
-    }
-
     public void pause() {
         running = false;
         try {
