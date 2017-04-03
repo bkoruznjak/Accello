@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Sensor;
@@ -16,6 +17,11 @@ import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.example.borna.accello.obstacles.GameObject;
+
+import java.util.ArrayList;
+import java.util.Random;
+
 import static com.example.borna.accello.R.drawable.ball;
 
 /**
@@ -26,21 +32,21 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
 
     private static final int TARGET_FPS = 60;
     private final int BALL_RADIUS = 5;
+    Path mTrailPath;
     private int mWidth;
     private int mHeight;
     private Paint mCircleOuterPaint;
     private Paint mCircleInnerPaint;
     private Circle mCircle;
-
     private float mScreenWidthOnePercent;
     private float mActualBallRadius;
-
     private float mTargetFrameDrawTime;
     private SurfaceHolder mSurfaceHolder;
     private long mTimeStartCurrentFrame;
     private long mDelta;
     private long mTimeEndCurrentFrame;
     private long mTimeSleepInMillis;
+    private long mGameTimeStart;
     private Thread drawingThread = null;
     private Canvas mScreenCanvas;
     private volatile boolean running;
@@ -51,7 +57,9 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     private float[] gyroCoordinates = new float[2];
     private BitmapDrawable mBall;
     private Bitmap mBallBitmap;
-
+    private long mRespawnCooldownHolder = 0;
+    private ArrayList<GameObject> gameObjectsList = new ArrayList<>();
+    private int mMaxScreenSize;
     private Rect mViewRect;
 
     public BallView(Context context) {
@@ -71,6 +79,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         mCircleOuterPaint.setColor(Color.BLUE);
         mCircleOuterPaint.setAntiAlias(true);
         mCircleOuterPaint.setStyle(Paint.Style.STROKE);
+        mCircleOuterPaint.setStrokeCap(Paint.Cap.ROUND);
 
         mCircleInnerPaint = new Paint();
         mCircleInnerPaint.setColor(Color.CYAN);
@@ -84,6 +93,8 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         mBallBitmap = mBall.getBitmap();
         mBallSize = mBallBitmap.getWidth();
 
+        mTrailPath = new Path();
+
         SensorManager manager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
             Log.e("bbb", " No accelerometer installed");
@@ -95,6 +106,8 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
                 Log.e("bbb", " Couldn't register sensor listener");
             }
         }
+
+        mGameTimeStart = System.currentTimeMillis();
     }
 
     @Override
@@ -110,8 +123,10 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
 
         if (mWidth > mHeight) {
             mScreenWidthOnePercent = mHeight / 100.0f;
+            mMaxScreenSize = mHeight / 2;
         } else {
             mScreenWidthOnePercent = mWidth / 100.0f;
+            mMaxScreenSize = mWidth / 2;
         }
 
         mCircleOuterPaint.setStrokeWidth(mScreenWidthOnePercent);
@@ -129,7 +144,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
 
     private void draw() {
         if (mSurfaceHolder.getSurface().isValid()) {
-            //Get start time for FPS calcualtion
+            //Get start time for FPS calculation
             mTimeStartCurrentFrame = System.nanoTime() / 1000000;
             //First we lock the area of memory we will be drawing to
             mScreenCanvas = mSurfaceHolder.lockCanvas();
@@ -137,8 +152,15 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             // Rub out the last frame
             mScreenCanvas.drawColor(Color.argb(255, 255, 255, 255));
 
+//            mScreenCanvas.drawPath(mTrailPath, mCircleOuterPaint);
+            for (GameObject object : gameObjectsList) {
+                mScreenCanvas.drawCircle(object.getOriginX(), object.getOriginY(), object.getSize(), mCircleInnerPaint);
+            }
+
+
             mScreenCanvas.drawCircle(xHolder, yHolder, mActualBallRadius, mCircleInnerPaint);
             mScreenCanvas.drawCircle(xHolder, yHolder, mActualBallRadius, mCircleOuterPaint);
+
 
             // Unlock and draw the scene
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
@@ -148,9 +170,30 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     }
 
     private void update() {
+        //todo spawn random circles
+
+        if (mWidth > 0 && mHeight > 0 && System.currentTimeMillis() - mGameTimeStart > mRespawnCooldownHolder) {
+            mRespawnCooldownHolder += 5000;
+            Random rnd = new Random();
+            int spawnX = rnd.nextInt(mWidth);
+            int spawnY = rnd.nextInt(mHeight);
+            gameObjectsList.add(new GameObject(spawnX, spawnY));
+            Log.d("bbb", "spawning somehting at x:" + spawnX + " y:" + spawnY);
+        }
+
+        for (GameObject object : gameObjectsList) {
+            object.grow();
+        }
 
         //grow
-        mActualBallRadius += mScreenWidthOnePercent / 100.0f;
+        if (mActualBallRadius + (mScreenWidthOnePercent / 50.0f) >= mMaxScreenSize) {
+            //todo game over
+            Log.d("bbb", "veci je stop");
+
+        } else {
+            mActualBallRadius += mScreenWidthOnePercent / 50.0f;
+        }
+//        mTrailPath.lineTo(xHolder,yHolder);
 
         if (xHolder < 0 && yHolder < 0) {
             xHolder = mWidth / 2;
