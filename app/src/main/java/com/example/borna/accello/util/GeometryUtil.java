@@ -28,6 +28,24 @@ public class GeometryUtil {
     }
 
     /**
+     * Method checks if two circles are overlapping in 2D Descartes space
+     *
+     * @param firstX
+     * @param firstY
+     * @param firstRadius
+     * @param secondX
+     * @param secondY
+     * @param secondRadius
+     * @return true if circles intersect
+     */
+    @NotNull
+    public static boolean areCirclesOverlapping(int firstX, int firstY, float firstRadius, int secondX, int secondY, float secondRadius) {
+        double distance = distanceBetweenTwoPoints(firstX, firstY, secondX, secondY);
+        return distance < (firstRadius - secondRadius);
+    }
+
+
+    /**
      * Method gets the double distance between two points
      *
      * @param firstX
