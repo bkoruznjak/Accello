@@ -18,6 +18,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.example.borna.accello.obstacles.GameObject;
+import com.example.borna.accello.util.GeometryUtil;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -143,8 +144,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     }
 
     private void update() {
-        //todo spawn random circles
-
+        //random game object spawning
         if (mWidth > 0 && mHeight > 0 && System.currentTimeMillis() - mGameTimeStart > mRespawnCooldownHolder) {
             mRespawnCooldownHolder += 5000;
             Random rnd = new Random();
@@ -154,8 +154,14 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             Log.d("bbb", "spawning somehting at x:" + spawnX + " y:" + spawnY);
         }
 
+        //loop through and see if you touch them or not
         for (GameObject object : gameObjectsList) {
-            object.grow();
+            if (GeometryUtil.areCirclesIntersecting(xHolder, yHolder, mActualBallRadius, object.getOriginX(), object.getOriginY(), object.getMaxSize())) {
+                gameObjectsList.remove(object);
+                Log.d("bbb", "TOUCH CAUGHT, REMOVING OBJECT FROM SCREEN");
+            } else {
+                object.grow();
+            }
         }
 
         //grow
