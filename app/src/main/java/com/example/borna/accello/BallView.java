@@ -142,33 +142,6 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         }
     }
 
-    private void draw() {
-        if (mSurfaceHolder.getSurface().isValid()) {
-            //Get start time for FPS calculation
-            mTimeStartCurrentFrame = System.nanoTime() / 1000000;
-            //First we lock the area of memory we will be drawing to
-            mScreenCanvas = mSurfaceHolder.lockCanvas();
-
-            // Rub out the last frame
-            mScreenCanvas.drawColor(Color.argb(255, 255, 255, 255));
-
-//            mScreenCanvas.drawPath(mTrailPath, mCircleOuterPaint);
-            for (GameObject object : gameObjectsList) {
-                mScreenCanvas.drawCircle(object.getOriginX(), object.getOriginY(), object.getSize(), mCircleInnerPaint);
-            }
-
-
-            mScreenCanvas.drawCircle(xHolder, yHolder, mActualBallRadius, mCircleInnerPaint);
-            mScreenCanvas.drawCircle(xHolder, yHolder, mActualBallRadius, mCircleOuterPaint);
-
-
-            // Unlock and draw the scene
-            mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
-            //Get end time for FPS calcualtion
-            mTimeEndCurrentFrame = System.nanoTime() / 1000000;
-        }
-    }
-
     private void update() {
         //todo spawn random circles
 
@@ -214,6 +187,35 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             }
         }
     }
+
+    private void draw() {
+        if (mSurfaceHolder.getSurface().isValid()) {
+            //Get start time for FPS calculation
+            mTimeStartCurrentFrame = System.nanoTime() / 1000000;
+            //First we lock the area of memory we will be drawing to
+            mScreenCanvas = mSurfaceHolder.lockCanvas();
+
+            // Rub out the last frame
+            mScreenCanvas.drawColor(Color.argb(255, 255, 255, 255));
+
+//            mScreenCanvas.drawPath(mTrailPath, mCircleOuterPaint);
+            for (GameObject object : gameObjectsList) {
+                mScreenCanvas.drawCircle(object.getOriginX(), object.getOriginY(), object.getSize(), mCircleInnerPaint);
+            }
+
+
+            mScreenCanvas.drawCircle(xHolder, yHolder, mActualBallRadius, mCircleInnerPaint);
+            mScreenCanvas.drawCircle(xHolder, yHolder, mActualBallRadius, mCircleOuterPaint);
+
+
+            // Unlock and draw the scene
+            mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
+            //Get end time for FPS calcualtion
+            mTimeEndCurrentFrame = System.nanoTime() / 1000000;
+        }
+    }
+
+
 
     private void control() {
         try {
