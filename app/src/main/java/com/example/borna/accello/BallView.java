@@ -18,13 +18,17 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.example.borna.accello.obstacles.GameObject;
-import com.example.borna.accello.obstacles.ObjectPower;
+import com.example.borna.accello.obstacles.PowerUp;
 import com.example.borna.accello.util.GeometryUtil;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 import static com.example.borna.accello.R.drawable.ball;
+import static com.example.borna.accello.obstacles.ObjectPower.GROW;
+import static com.example.borna.accello.obstacles.ObjectPower.SHRINK;
+import static com.example.borna.accello.obstacles.ObjectPower.SLOW_DOWN;
+import static com.example.borna.accello.obstacles.ObjectPower.SPEED_UP;
 
 /**
  * Created by bkoruznjak on 16/03/2017.
@@ -33,6 +37,7 @@ import static com.example.borna.accello.R.drawable.ball;
 public class BallView extends SurfaceView implements Runnable, SensorEventListener {
 
     private static final int TARGET_FPS = 60;
+    private static final int POWERUP_MAX_SIZE = 50;
     private final int BALL_RADIUS = 5;
     Path mTrailPath;
     private int mWidth;
@@ -60,7 +65,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     private BitmapDrawable mBall;
     private Bitmap mBallBitmap;
     private long mRespawnCooldownHolder = 0;
-    private ArrayList<GameObject> gameObjectsList = new ArrayList<>();
+    private ArrayList<PowerUp> gameObjectsList = new ArrayList<>();
     private int mMaxScreenSize;
     private Rect mViewRect;
     private int mObjectSpawnedCounter;
@@ -149,34 +154,34 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         //random game object spawning
         if (mWidth > 0 && mHeight > 0 && System.currentTimeMillis() - mGameTimeStart > mRespawnCooldownHolder) {
             mObjectSpawnedCounter++;
-            mRespawnCooldownHolder += 5000;
+            mRespawnCooldownHolder += 1000;
             Random rnd = new Random();
 
             int spawnX = rnd.nextInt(mWidth);
             int spawnY = rnd.nextInt(mHeight);
 
             //we add a bit of margin equal to the max size of the object
-            if (spawnX <= 0) {
-                spawnX += GameObject.MAX_SIZE;
-            } else if (spawnX >= mWidth) {
-                spawnX -= GameObject.MAX_SIZE;
+            if (spawnX <= POWERUP_MAX_SIZE) {
+                spawnX += POWERUP_MAX_SIZE;
+            } else if (spawnX >= mWidth - POWERUP_MAX_SIZE) {
+                spawnX -= POWERUP_MAX_SIZE;
             }
 
-            if (spawnY <= 0) {
-                spawnY += GameObject.MAX_SIZE;
-            } else if (spawnY >= mHeight) {
-                spawnY -= GameObject.MAX_SIZE;
+            if (spawnY <= POWERUP_MAX_SIZE) {
+                spawnY += POWERUP_MAX_SIZE;
+            } else if (spawnY >= mHeight - POWERUP_MAX_SIZE) {
+                spawnY -= POWERUP_MAX_SIZE;
             }
 
-            GameObject newObject = new GameObject(spawnX, spawnY);
+            PowerUp newObject = new PowerUp(spawnX, spawnY, POWERUP_MAX_SIZE);
             if (mObjectSpawnedCounter % 4 == 0) {
-                newObject.setPower(ObjectPower.GROW);
+                newObject.setPower(GROW);
             } else if (mObjectSpawnedCounter % 3 == 0) {
-                newObject.setPower(ObjectPower.SPEED_UP);
+                newObject.setPower(SPEED_UP);
             } else if (mObjectSpawnedCounter % 2 == 0) {
-                newObject.setPower(ObjectPower.SHRINK);
+                newObject.setPower(SHRINK);
             } else {
-                newObject.setPower(ObjectPower.SLOW_DOWN);
+                newObject.setPower(SLOW_DOWN);
             }
             gameObjectsList.add(newObject);
             Log.d("bbb", "spawning OBJECT at x:" + spawnX + " y:" + spawnY + ", with power:" + newObject.getPower());
@@ -184,9 +189,21 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
 
         //loop through and see if you touch them or not
         for (int index = 0; index < gameObjectsList.size(); index++) {
-            GameObject object = gameObjectsList.get(index);
-            if (object.canInteract() && GeometryUtil.areCirclesOverlapping(xHolder, yHolder, mActualBallRadius, object.getOriginX(), object.getOriginY(), object.getSize())) {
+            PowerUp object = gameObjectsList.get(index);
+            if (object.isUsable() && GeometryUtil.areCirclesOverlapping(xHolder, yHolder, mActualBallRadius, object.getOriginX(), object.getOriginY(), object.getSize())) {
                 gameObjectsList.remove(object);
+                switch (object.getPower()) {
+                    case GROW:
+                    case SPEED_UP:
+                        mActualBallRadius += (mScreenWidthOnePercent * 5);
+                        break;
+                    case SLOW_DOWN:
+                    case SHRINK:
+                        mActualBallRadius -= (mScreenWidthOnePercent * 3);
+                        break;
+                    default:
+                        break;
+                }
                 //todo inherit the power to the player whetever the object power was
                 Log.d("bbb", "overlap CAUGHT, REMOVING OBJECT FROM SCREEN");
             } else {
