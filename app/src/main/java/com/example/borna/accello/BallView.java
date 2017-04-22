@@ -1,13 +1,11 @@
 package com.example.borna.accello;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -24,7 +22,6 @@ import com.example.borna.accello.util.GeometryUtil;
 import java.util.ArrayList;
 import java.util.Random;
 
-import static com.example.borna.accello.R.drawable.ball;
 import static com.example.borna.accello.obstacles.ObjectPower.GROW;
 import static com.example.borna.accello.obstacles.ObjectPower.SHRINK;
 import static com.example.borna.accello.obstacles.ObjectPower.SLOW_DOWN;
@@ -59,11 +56,8 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     private volatile boolean running;
     private volatile int yHolder = -1;
     private volatile int xHolder = -1;
-    private int mBallSize;
     private volatile boolean rising;
     private float[] gyroCoordinates = new float[2];
-    private BitmapDrawable mBall;
-    private Bitmap mBallBitmap;
     private long mRespawnCooldownHolder = 0;
     private ArrayList<PowerUp> gameObjectsList = new ArrayList<>();
     private int mMaxScreenSize;
@@ -96,10 +90,6 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
 
         this.mTargetFrameDrawTime = 1000f / TARGET_FPS;
         this.mSurfaceHolder = getHolder();
-
-        mBall = (BitmapDrawable) getContext().getResources().getDrawable(ball);
-        mBallBitmap = mBall.getBitmap();
-        mBallSize = mBallBitmap.getWidth();
 
         mTrailPath = new Path();
 
