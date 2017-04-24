@@ -26,21 +26,26 @@ public class PlayerObject extends GameObject {
 
         int x = super.getOriginX();
         int y = super.getOriginY();
+        int localGrowth = 1;
+
+        if (growthCoefficient > 0) {
+            localGrowth = (int) growthCoefficient;
+        }
 
         if (x + mPlayerObjectRadius + growthCoefficient > widthBoundary) {
-            move((int) -1, 0);
+            move(-localGrowth, 0);
         }
 
         if (x - mPlayerObjectRadius - growthCoefficient < 0) {
-            move((int) 1, 0);
+            move(localGrowth, 0);
         }
 
         if (y + mPlayerObjectRadius + growthCoefficient > heightBoundary) {
-            move(0, (int) -1);
+            move(0, -localGrowth);
         }
 
         if (y - mPlayerObjectRadius - growthCoefficient < 0) {
-            move(0, (int) 1);
+            move(0, localGrowth);
         }
 
         mPlayerObjectRadius += growthCoefficient;
