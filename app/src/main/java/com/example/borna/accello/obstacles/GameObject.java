@@ -56,4 +56,9 @@ public class GameObject {
         this.size = size;
     }
 
+    public void move(int xMove, int yMove) {
+        this.originX += xMove;
+        this.originY += yMove;
+    }
+
 }
