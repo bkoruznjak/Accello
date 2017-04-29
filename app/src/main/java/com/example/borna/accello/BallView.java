@@ -11,8 +11,10 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import com.example.borna.accello.obstacles.GameObject;
 import com.example.borna.accello.obstacles.PlayerObject;
@@ -31,7 +33,7 @@ import static com.example.borna.accello.obstacles.ObjectPower.SPEED_UP;
  * Created by bkoruznjak on 16/03/2017.
  */
 
-public class BallView extends SurfaceView implements Runnable, SensorEventListener {
+public class BallView extends SurfaceView implements Runnable, SensorEventListener, View.OnTouchListener {
 
     private static final int TARGET_FPS = 60;
     private static final int POWERUP_MAX_SIZE = 50;
@@ -59,6 +61,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     private Paint mPlayerObjectPaint;
     private PlayerObject mPlayer;
     private boolean readyToRun;
+    private Paint mUiPaint;
 
     public BallView(Context context) {
         super(context);
@@ -73,6 +76,13 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     private void init() {
         this.mTargetFrameDrawTime = 1000f / TARGET_FPS;
         this.mSurfaceHolder = getHolder();
+        mUiPaint = new Paint();
+        mUiPaint.setAntiAlias(true);
+        mUiPaint.setColor(Color.RED);
+        mUiPaint.setTextAlign(Paint.Align.CENTER);
+        mUiPaint.setTextSize(100);
+
+        setOnTouchListener(this);
 
         SensorManager manager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
@@ -162,7 +172,6 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
                 newObject.setPower(INVERT_CONTROL);
             }
             gameObjectsList.add(newObject);
-            Log.d("bbb", "spawning OBJECT at x:" + spawnX + " y:" + spawnY + ", with power:" + newObject.getPower());
         }
 
         //loop through and see if you touch them or not
@@ -184,6 +193,8 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
                         mPlayer.triggerRapidShrink();
                         break;
                     default:
+                        //FOR FAST END GAME UI DEBUG
+                        mPlayer.triggerRapidGrowth();
                         break;
                 }
                 //todo inherit the power to the player whetever the object power was
@@ -196,11 +207,23 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         mPlayer.moveWithConstraints(gyroCoordinates[1] * 2, gyroCoordinates[0] * 2);
         //grow
         if (mPlayer.getPlayerRadius() + (mScreenWidthOnePercent / 50.0f) >= mMaxScreenSize) {
-            //todo game over
-            Log.d("bbb", "game should end");
+            endGame();
         } else {
             mPlayer.live();
         }
+    }
+
+    private void endGame() {
+        if (mSurfaceHolder.getSurface().isValid()) {
+            //Get start time for FPS calculation
+            mTimeStartCurrentFrame = System.nanoTime() / 1000000;
+            //First we lock the area of memory we will be drawing to
+            mScreenCanvas = mSurfaceHolder.lockCanvas();
+            mScreenCanvas.drawText("GAME OVER", mWidth / 2, mHeight / 2, mUiPaint);
+            mScreenCanvas.drawText("tap to restart", mWidth / 2, mHeight / 2 + 100, mUiPaint);
+            mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
+        }
+        pause();
     }
 
     private void draw() {
@@ -218,7 +241,6 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
                 mScreenCanvas.drawCircle(object.getOriginX(), object.getOriginY(), object.getSize(), object.getPaint());
             }
             mScreenCanvas.drawCircle(mPlayer.getOriginX(), mPlayer.getOriginY(), mPlayer.getPlayerRadius(), mPlayer.getPaint());
-
             // Unlock and draw the scene
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
             //Get end time for FPS calcualtion
@@ -251,7 +273,6 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     }
 
     public void resume() {
-        Log.d("bbb", "resuming");
         running = true;
         drawingThread = new Thread(this);
         drawingThread.start();
@@ -266,5 +287,15 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN && !running) {
+            gameObjectsList.clear();
+            mPlayer.resetPlayer();
+            resume();
+        }
+        return false;
     }
 }

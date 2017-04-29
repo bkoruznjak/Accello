@@ -1,7 +1,5 @@
 package com.example.borna.accello.obstacles;
 
-import android.util.Log;
-
 /**
  * Created by bkoruznjak on 22/04/2017.
  */
@@ -29,6 +27,11 @@ public class PlayerObject extends GameObject {
     private boolean isFast = false;
     private boolean areControlsInverted = false;
 
+    //stuff for re-init;
+    private int restartOriginX;
+    private int restartOriginY;
+    private float restartRadius;
+
 
     public PlayerObject(int originX, int originY, float initialRadius, int growthCoefficient) {
         super(originX, originY);
@@ -45,6 +48,11 @@ public class PlayerObject extends GameObject {
         this.fastGrowthCoefficient = this.growthCoefficient * CHANGE_MULTIPLIER;
         this.mPlayerObjectRadius = initialRadius;
         this.PLAYER_MIN_RADIUS = initialRadius / 2;
+    }
+
+    public void resetPlayer() {
+        super.move(restartOriginX, restartOriginY);
+        mPlayerObjectRadius = restartRadius;
     }
 
     private void resetPowerupTriggers(ObjectPower objectPower) {
@@ -120,22 +128,18 @@ public class PlayerObject extends GameObject {
         int y = super.getOriginY();
 
         if (x + mPlayerObjectRadius + growthCoefficient > widthBoundary) {
-            Log.d("bbb", "prvi");
             move(-growthCoefficient, 0);
         }
 
         if (x - mPlayerObjectRadius - growthCoefficient < 0) {
-            Log.d("bbb", "drugi");
             move(growthCoefficient, 0);
         }
 
         if (y + mPlayerObjectRadius + growthCoefficient > heightBoundary) {
-            Log.d("bbb", "treci");
             move(0, -growthCoefficient);
         }
 
         if (y - mPlayerObjectRadius - growthCoefficient < 0) {
-            Log.d("bbb", "cetvrti");
             move(0, growthCoefficient);
         }
 
