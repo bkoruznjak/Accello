@@ -11,7 +11,6 @@ public class PlayerObject extends GameObject {
     private static final int CHANGE_MULTIPLIER = 2;
     private float mPlayerObjectRadius;
     private float fastGrowthCoefficient;
-    private float minimalRadius;
     private int growthCoefficient;
     private int widthBoundary;
     private int heightBoundary;
@@ -30,7 +29,6 @@ public class PlayerObject extends GameObject {
         }
         this.fastGrowthCoefficient = growthCoefficient * CHANGE_MULTIPLIER;
         this.mPlayerObjectRadius = initialRadius;
-        this.minimalRadius = initialRadius;
     }
 
     public void growNormal() {

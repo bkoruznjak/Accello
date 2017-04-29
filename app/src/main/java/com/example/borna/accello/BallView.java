@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -37,12 +36,8 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     private static final int TARGET_FPS = 60;
     private static final int POWERUP_MAX_SIZE = 50;
     private final int BALL_RADIUS = 5;
-    Path mTrailPath;
     private int mWidth;
     private int mHeight;
-    private Paint mCircleOuterPaint;
-    private Paint mCircleInnerPaint;
-    private Circle mCircle;
     private float mScreenWidthOnePercent;
     private float mActualBallRadius;
     private float mTargetFrameDrawTime;
@@ -55,9 +50,6 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     private Thread drawingThread = null;
     private Canvas mScreenCanvas;
     private volatile boolean running;
-    private volatile int yHolder = -1;
-    private volatile int xHolder = -1;
-    private volatile boolean rising;
     private float[] gyroCoordinates = new float[2];
     private long mRespawnCooldownHolder = 0;
     private ArrayList<PowerUp> gameObjectsList = new ArrayList<>();
@@ -104,10 +96,6 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         mHeight = h;
 
         mViewRect = new Rect(0, 0, w, h);
-        float radius = (mWidth / 100.0f) * 5.0f;
-
-        mCircle = new Circle(mWidth / 2, mHeight / 2, radius);
-
         if (mWidth > mHeight) {
             mScreenWidthOnePercent = mHeight / 100.0f;
             mMaxScreenSize = mHeight / 2;
@@ -118,7 +106,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
 
         mActualBallRadius = (int) (BALL_RADIUS * mScreenWidthOnePercent);
         mPlayerObjectPaint = new Paint();
-        mPlayerObjectPaint.setColor(Color.BLUE);
+        mPlayerObjectPaint.setColor(Color.MAGENTA);
         mPlayerObjectPaint.setAntiAlias(true);
         mPlayerObjectPaint.setStyle(Paint.Style.FILL);
 

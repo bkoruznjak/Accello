@@ -38,10 +38,10 @@ public class PowerUp extends GameObject {
                     mPaint.setColor(Color.BLUE);
                     break;
                 case SPEED_UP:
-                    mPaint.setColor(Color.GREEN);
+                    mPaint.setColor(Color.YELLOW);
                     break;
                 case SLOW_DOWN:
-                    mPaint.setColor(Color.MAGENTA);
+                    mPaint.setColor(Color.GREEN);
                     break;
             }
 
