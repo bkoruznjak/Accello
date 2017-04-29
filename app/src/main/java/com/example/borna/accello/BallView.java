@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import static com.example.borna.accello.obstacles.ObjectPower.GROW;
+import static com.example.borna.accello.obstacles.ObjectPower.INVERT_CONTROL;
 import static com.example.borna.accello.obstacles.ObjectPower.SHRINK;
-import static com.example.borna.accello.obstacles.ObjectPower.SLOW_DOWN;
 import static com.example.borna.accello.obstacles.ObjectPower.SPEED_UP;
 
 /**
@@ -159,7 +159,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             } else if (mObjectSpawnedCounter % 2 == 0) {
                 newObject.setPower(SHRINK);
             } else {
-                newObject.setPower(SLOW_DOWN);
+                newObject.setPower(INVERT_CONTROL);
             }
             gameObjectsList.add(newObject);
             Log.d("bbb", "spawning OBJECT at x:" + spawnX + " y:" + spawnY + ", with power:" + newObject.getPower());
@@ -175,9 +175,13 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
                         mPlayer.triggerRapidGrowth();
                         break;
                     case SPEED_UP:
-                    case SLOW_DOWN:
+                        mPlayer.triggerSpeedUp();
+                        break;
+                    case INVERT_CONTROL:
+                        mPlayer.triggerInvertControl();
+                        break;
                     case SHRINK:
-                        mPlayer.triggerNormalShrink();
+                        mPlayer.triggerRapidShrink();
                         break;
                     default:
                         break;

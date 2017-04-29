@@ -6,8 +6,10 @@ package com.example.borna.accello.obstacles;
 
 public enum ObjectPower {
     UNKNOWN,
+    RESET,
     SHRINK,
     GROW,
     SPEED_UP,
-    SLOW_DOWN;
+    SLOW_DOWN,
+    INVERT_CONTROL;
 }

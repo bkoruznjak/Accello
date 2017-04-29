@@ -10,8 +10,10 @@ public class PlayerObject extends GameObject {
 
     private static final int CHANGE_MULTIPLIER = 2;
     private static final int POWERUP_DURATION_IN_MILLIS = 1000;
+    private final float PLAYER_MIN_RADIUS;
 
     private float mPlayerObjectRadius;
+
 
     private long mPowerUpTriggerStart;
     private long mPowerUpTriggerHolder;
@@ -22,8 +24,10 @@ public class PlayerObject extends GameObject {
     private int heightBoundary;
 
     private boolean isGrowingRapidly = false;
-    private boolean isShrinkingNormaly = false;
     private boolean isShrinkingRadidly = false;
+    private boolean isShrinkingNormally = false;
+    private boolean isFast = false;
+    private boolean areControlsInverted = false;
 
 
     public PlayerObject(int originX, int originY, float initialRadius, int growthCoefficient) {
@@ -40,40 +44,74 @@ public class PlayerObject extends GameObject {
         }
         this.fastGrowthCoefficient = this.growthCoefficient * CHANGE_MULTIPLIER;
         this.mPlayerObjectRadius = initialRadius;
+        this.PLAYER_MIN_RADIUS = initialRadius / 2;
     }
 
-    private void resetPowerupTriggers() {
+    private void resetPowerupTriggers(ObjectPower objectPower) {
         isGrowingRapidly = false;
-        isShrinkingNormaly = false;
         isShrinkingRadidly = false;
+        isShrinkingNormally = false;
+        isFast = false;
+        areControlsInverted = false;
+        switch (objectPower) {
+            case GROW:
+                isGrowingRapidly = true;
+                break;
+            case SHRINK:
+                isShrinkingRadidly = true;
+                break;
+            case SPEED_UP:
+                isShrinkingNormally = true;
+                isShrinkingRadidly = true;
+                isFast = true;
+                break;
+            case INVERT_CONTROL:
+                isShrinkingNormally = true;
+                areControlsInverted = true;
+                break;
+            case RESET:
+                isShrinkingNormally = false;
+                isShrinkingRadidly = false;
+                isFast = false;
+                areControlsInverted = false;
+                break;
+        }
     }
 
     public void live() {
         mPowerUpTriggerHolder = System.currentTimeMillis();
         if (mPowerUpTriggerHolder - mPowerUpTriggerStart > POWERUP_DURATION_IN_MILLIS) {
-            resetPowerupTriggers();
+            resetPowerupTriggers(ObjectPower.RESET);
         }
 
         if (isGrowingRapidly) {
             growFast();
-        } else if (isShrinkingNormaly) {
-            shrinkNormal();
         } else if (isShrinkingRadidly) {
             shrinkFast();
+        } else if (isShrinkingNormally) {
+            shrinkNormal();
         } else {
             growNormal();
         }
     }
 
     public void triggerRapidGrowth() {
-        resetPowerupTriggers();
-        isGrowingRapidly = true;
+        resetPowerupTriggers(ObjectPower.GROW);
         mPowerUpTriggerStart = System.currentTimeMillis();
     }
 
-    public void triggerNormalShrink() {
-        resetPowerupTriggers();
-        isShrinkingNormaly = true;
+    public void triggerRapidShrink() {
+        resetPowerupTriggers(ObjectPower.SHRINK);
+        mPowerUpTriggerStart = System.currentTimeMillis();
+    }
+
+    public void triggerSpeedUp() {
+        resetPowerupTriggers(ObjectPower.SPEED_UP);
+        mPowerUpTriggerStart = System.currentTimeMillis();
+    }
+
+    public void triggerInvertControl() {
+        resetPowerupTriggers(ObjectPower.INVERT_CONTROL);
         mPowerUpTriggerStart = System.currentTimeMillis();
     }
 
@@ -105,7 +143,9 @@ public class PlayerObject extends GameObject {
     }
 
     private void shrink(int shrinkCoefficient) {
-        mPlayerObjectRadius -= shrinkCoefficient;
+        if (mPlayerObjectRadius - shrinkCoefficient > PLAYER_MIN_RADIUS) {
+            mPlayerObjectRadius -= shrinkCoefficient;
+        }
     }
 
     private void growNormal() {
@@ -160,12 +200,32 @@ public class PlayerObject extends GameObject {
         int x = super.getOriginX();
         int y = super.getOriginY();
 
-        if (x + mPlayerObjectRadius + speedX < widthBoundary && x - mPlayerObjectRadius + speedX > 0) {
-            move((int) speedX, 0);
-        }
+        if (isFast) {
+            speedX *= CHANGE_MULTIPLIER;
+            speedY *= CHANGE_MULTIPLIER;
+            if (x + mPlayerObjectRadius + speedX < widthBoundary && x - mPlayerObjectRadius + speedX > 0) {
+                move((int) speedX, 0);
+            }
 
-        if (y + mPlayerObjectRadius + speedY < heightBoundary && y - mPlayerObjectRadius + speedY > 0) {
-            move(0, (int) speedY);
+            if (y + mPlayerObjectRadius + speedY < heightBoundary && y - mPlayerObjectRadius + speedY > 0) {
+                move(0, (int) speedY);
+            }
+        } else if (areControlsInverted) {
+            if (x + mPlayerObjectRadius + speedY < widthBoundary && x - mPlayerObjectRadius + speedY > 0) {
+                move((int) speedY, 0);
+            }
+
+            if (y + mPlayerObjectRadius + speedX < heightBoundary && y - mPlayerObjectRadius + speedX > 0) {
+                move(0, (int) speedX);
+            }
+        } else {
+            if (x + mPlayerObjectRadius + speedX < widthBoundary && x - mPlayerObjectRadius + speedX > 0) {
+                move((int) speedX, 0);
+            }
+
+            if (y + mPlayerObjectRadius + speedY < heightBoundary && y - mPlayerObjectRadius + speedY > 0) {
+                move(0, (int) speedY);
+            }
         }
     }
 }
