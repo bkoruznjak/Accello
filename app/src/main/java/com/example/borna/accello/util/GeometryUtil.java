@@ -1,6 +1,5 @@
 package com.example.borna.accello.util;
 
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Holds all the meaningfull geometry functions one would need
@@ -21,7 +20,6 @@ public class GeometryUtil {
      * @param secondRadius
      * @return true if circles intersect
      */
-    @NotNull
     public static boolean areCirclesIntersecting(int firstX, int firstY, float firstRadius, int secondX, int secondY, float secondRadius) {
         double distance = distanceBetweenTwoPoints(firstX, firstY, secondX, secondY);
         return distance < (firstRadius + secondRadius);
@@ -38,7 +36,6 @@ public class GeometryUtil {
      * @param secondRadius
      * @return true if circles intersect
      */
-    @NotNull
     public static boolean areCirclesOverlapping(int firstX, int firstY, float firstRadius, int secondX, int secondY, float secondRadius) {
         double distance = distanceBetweenTwoPoints(firstX, firstY, secondX, secondY);
         return distance < (firstRadius - secondRadius);
@@ -54,7 +51,6 @@ public class GeometryUtil {
      * @param secondY
      * @return distance between points
      */
-    @NotNull
     public static double distanceBetweenTwoPoints(int firstX, int firstY, int secondX, int secondY) {
         return Math.sqrt((secondX - firstX) * (secondX - firstX) + (secondY - firstY) * (secondY - firstY));
     }

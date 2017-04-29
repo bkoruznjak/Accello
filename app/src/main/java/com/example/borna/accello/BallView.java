@@ -122,7 +122,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         mPlayerObjectPaint.setAntiAlias(true);
         mPlayerObjectPaint.setStyle(Paint.Style.FILL);
 
-        mPlayer = new PlayerObject(mWidth / 2, mHeight / 2, mActualBallRadius, mScreenWidthOnePercent / 50.0f);
+        mPlayer = new PlayerObject(mWidth / 2, mHeight / 2, mActualBallRadius, (int) (mScreenWidthOnePercent / 50.0f));
         mPlayer.setPaint(mPlayerObjectPaint);
         mPlayer.setHeightBoundary(mHeight);
         mPlayer.setWidthBoundary(mWidth);
@@ -205,8 +205,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         //grow
         if (mPlayer.getPlayerRadius() + (mScreenWidthOnePercent / 50.0f) >= mMaxScreenSize) {
             //todo game over
-            Log.d("bbb", "veci je stop");
-
+            Log.d("bbb", "game should end");
         } else {
             mPlayer.growNormal();
         }
