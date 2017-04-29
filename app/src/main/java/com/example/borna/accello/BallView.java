@@ -172,12 +172,12 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
                 gameObjectsList.remove(object);
                 switch (object.getPower()) {
                     case GROW:
-                    case SPEED_UP:
-                        mActualBallRadius += (mScreenWidthOnePercent * 5);
+                        mPlayer.triggerRapidGrowth();
                         break;
+                    case SPEED_UP:
                     case SLOW_DOWN:
                     case SHRINK:
-                        mActualBallRadius -= (mScreenWidthOnePercent * 3);
+                        mPlayer.triggerNormalShrink();
                         break;
                     default:
                         break;
@@ -195,7 +195,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             //todo game over
             Log.d("bbb", "game should end");
         } else {
-            mPlayer.growNormal();
+            mPlayer.live();
         }
     }
 

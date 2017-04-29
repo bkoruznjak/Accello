@@ -9,11 +9,22 @@ import android.util.Log;
 public class PlayerObject extends GameObject {
 
     private static final int CHANGE_MULTIPLIER = 2;
+    private static final int POWERUP_DURATION_IN_MILLIS = 1000;
+
     private float mPlayerObjectRadius;
-    private float fastGrowthCoefficient;
+
+    private long mPowerUpTriggerStart;
+    private long mPowerUpTriggerHolder;
+
     private int growthCoefficient;
+    private int fastGrowthCoefficient;
     private int widthBoundary;
     private int heightBoundary;
+
+    private boolean isGrowingRapidly = false;
+    private boolean isShrinkingNormaly = false;
+    private boolean isShrinkingRadidly = false;
+
 
     public PlayerObject(int originX, int originY, float initialRadius, int growthCoefficient) {
         super(originX, originY);
@@ -27,12 +38,46 @@ public class PlayerObject extends GameObject {
         } else {
             this.growthCoefficient = growthCoefficient;
         }
-        this.fastGrowthCoefficient = growthCoefficient * CHANGE_MULTIPLIER;
+        this.fastGrowthCoefficient = this.growthCoefficient * CHANGE_MULTIPLIER;
         this.mPlayerObjectRadius = initialRadius;
     }
 
-    public void growNormal() {
+    private void resetPowerupTriggers() {
+        isGrowingRapidly = false;
+        isShrinkingNormaly = false;
+        isShrinkingRadidly = false;
+    }
 
+    public void live() {
+        mPowerUpTriggerHolder = System.currentTimeMillis();
+        if (mPowerUpTriggerHolder - mPowerUpTriggerStart > POWERUP_DURATION_IN_MILLIS) {
+            resetPowerupTriggers();
+        }
+
+        if (isGrowingRapidly) {
+            growFast();
+        } else if (isShrinkingNormaly) {
+            shrinkNormal();
+        } else if (isShrinkingRadidly) {
+            shrinkFast();
+        } else {
+            growNormal();
+        }
+    }
+
+    public void triggerRapidGrowth() {
+        resetPowerupTriggers();
+        isGrowingRapidly = true;
+        mPowerUpTriggerStart = System.currentTimeMillis();
+    }
+
+    public void triggerNormalShrink() {
+        resetPowerupTriggers();
+        isShrinkingNormaly = true;
+        mPowerUpTriggerStart = System.currentTimeMillis();
+    }
+
+    private void grow(int growthCoefficient) {
         int x = super.getOriginX();
         int y = super.getOriginY();
 
@@ -59,16 +104,24 @@ public class PlayerObject extends GameObject {
         mPlayerObjectRadius += growthCoefficient;
     }
 
-    public void shrinkNormal() {
-        mPlayerObjectRadius -= growthCoefficient;
+    private void shrink(int shrinkCoefficient) {
+        mPlayerObjectRadius -= shrinkCoefficient;
     }
 
-    public void growFast() {
-        mPlayerObjectRadius += fastGrowthCoefficient;
+    private void growNormal() {
+        grow(growthCoefficient);
     }
 
-    public void shrinkFast() {
-        mPlayerObjectRadius -= fastGrowthCoefficient;
+    private void growFast() {
+        grow(fastGrowthCoefficient);
+    }
+
+    private void shrinkNormal() {
+        shrink(growthCoefficient);
+    }
+
+    private void shrinkFast() {
+        shrink(fastGrowthCoefficient);
     }
 
     public float getPlayerRadius() {
