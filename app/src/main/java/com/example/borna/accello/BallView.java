@@ -140,7 +140,6 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     }
 
     private void update() {
-        //random game object spawning
         if (mWidth > 0 && mHeight > 0 && System.currentTimeMillis() - mGameTimeStart > mRespawnCooldownHolder) {
             mObjectSpawnedCounter++;
             mRespawnCooldownHolder += 1000;
@@ -195,15 +194,12 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
                         mPlayer.triggerRapidGrowth();
                         break;
                 }
-                //todo inherit the power to the player whetever the object power was
-                Log.d("bbb", "overlap CAUGHT, REMOVING OBJECT FROM SCREEN");
             } else {
                 object.grow();
             }
         }
 
         mPlayer.moveWithConstraints(gyroCoordinates[1] * 2, gyroCoordinates[0] * 2);
-        //grow
         if (mPlayer.getPlayerRadius() + (mScreenWidthOnePercent / 50.0f) >= mMaxScreenSize) {
             endGame();
         } else {
