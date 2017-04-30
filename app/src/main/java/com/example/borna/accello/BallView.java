@@ -66,6 +66,12 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     private int mHUDHeight;
     private Paint mHUDPaint;
 
+    private int countPowerShrink;
+    private int countPowerGrow;
+    private int countPowerSpeed;
+    private int countPowerInvert;
+    private float gameTime;
+
     public BallView(Context context) {
         super(context);
         init();
@@ -98,7 +104,20 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
                 Log.e("bbb", " Couldn't register sensor listener");
             }
         }
+    }
 
+
+    private void setupNewGame() {
+        gameObjectsList.clear();
+        mObjectSpawnedCounter = 0;
+        mRespawnCooldownHolder = 0;
+        mPlayer.resetPlayer();
+
+        countPowerShrink = 0;
+        countPowerGrow = 0;
+        countPowerSpeed = 0;
+        countPowerInvert = 0;
+        gameTime = 0;
     }
 
     @Override
@@ -117,13 +136,13 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         }
 
         mActualBallRadius = (int) (BALL_RADIUS * mScreenWidthOnePercent);
+        mHUDHeight = (int) (5 * mScreenWidthOnePercent);
         mHUDPaint = new Paint();
         mHUDPaint.setAntiAlias(true);
         mHUDPaint.setColor(ColorUtil.COLOR_GROW);
-        mHUDPaint.setTextSize(100);
-        mHUDPaint.setStrokeWidth(mScreenWidthOnePercent);
-        mHUDPaint.setStyle(Paint.Style.STROKE);
-        mHUDHeight = (int) (5 * mScreenWidthOnePercent);
+        mHUDPaint.setTextSize(mHUDHeight / 2);
+        mHUDPaint.setTextAlign(Paint.Align.CENTER);
+
         EmbossMaskFilter embossfilter = new EmbossMaskFilter(new float[]{1, 1, 1}, 0.3f, 8f, 20f);
         mPlayerObjectPaint = new Paint();
         mPlayerObjectPaint.setColor(ColorUtil.COLOR_PLAYER);
@@ -151,7 +170,9 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     }
 
     private void update() {
-        if (mWidth > 0 && mHeight > 0 && System.currentTimeMillis() - mGameTimeStart > mRespawnCooldownHolder) {
+        gameTime = System.currentTimeMillis() - mGameTimeStart;
+
+        if (mWidth > 0 && mHeight > 0 && gameTime > mRespawnCooldownHolder) {
             mObjectSpawnedCounter++;
             mRespawnCooldownHolder += 1000;
 
@@ -187,18 +208,22 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             if (object.isUsable() && GeometryUtil.areCirclesOverlapping(mPlayer.getOriginX(), mPlayer.getOriginY(), mPlayer.getPlayerRadius(), object.getOriginX(), object.getOriginY(), object.getSize())) {
                 gameObjectsList.remove(object);
                 switch (object.getPower()) {
-//                    case GROW:
-//                        mPlayer.triggerRapidGrowth();
-//                        break;
-//                    case SPEED_UP:
-//                        mPlayer.triggerSpeedUp();
-//                        break;
-//                    case INVERT_CONTROL:
-//                        mPlayer.triggerInvertControl();
-//                        break;
-//                    case SHRINK:
-//                        mPlayer.triggerRapidShrink();
-//                        break;
+                    case GROW:
+                        countPowerGrow++;
+                        mPlayer.triggerRapidGrowth();
+                        break;
+                    case SPEED_UP:
+                        countPowerSpeed++;
+                        mPlayer.triggerSpeedUp();
+                        break;
+                    case INVERT_CONTROL:
+                        countPowerInvert++;
+                        mPlayer.triggerInvertControl();
+                        break;
+                    case SHRINK:
+                        countPowerShrink++;
+                        mPlayer.triggerRapidShrink();
+                        break;
                     default:
                         //FOR FAST END GAME UI DEBUG
                         mPlayer.triggerRapidGrowth();
@@ -249,7 +274,11 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             mScreenCanvas.drawCircle(mPlayer.getOriginX(), mPlayer.getOriginY(), mPlayer.getPlayerRadius(), mPlayer.getPaint());
 
             //HUD
-            mScreenCanvas.drawRect(0, 0, mWidth, mHeight, mHUDPaint);
+//            mScreenCanvas.drawRect(0, 0, mWidth, mHeight, mHUDPaint);
+            mScreenCanvas.drawLine(0, mHeight - mHUDHeight, mWidth, mHeight - mHUDHeight, mHUDPaint);
+
+            mScreenCanvas.drawText("time:" + gameTime / 1000, mWidth / 2, mHeight - (mHUDHeight / 2), mHUDPaint);
+
 
             // Unlock and draw the scene
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
@@ -303,10 +332,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN && !running) {
-            gameObjectsList.clear();
-            mObjectSpawnedCounter = 0;
-            mRespawnCooldownHolder = 0;
-            mPlayer.resetPlayer();
+            setupNewGame();
             resume();
         }
         return false;
