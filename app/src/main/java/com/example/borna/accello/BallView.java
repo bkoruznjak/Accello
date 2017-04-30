@@ -25,6 +25,7 @@ import com.example.borna.accello.util.GeometryUtil;
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
+import static android.view.HapticFeedbackConstants.KEYBOARD_TAP;
 import static com.example.borna.accello.obstacles.ObjectPower.GROW;
 import static com.example.borna.accello.obstacles.ObjectPower.INVERT_CONTROL;
 import static com.example.borna.accello.obstacles.ObjectPower.SHRINK;
@@ -212,6 +213,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             PowerUp object = gameObjectsList.get(index);
             if (object.isUsable() && GeometryUtil.areCirclesOverlapping(mPlayer.getOriginX(), mPlayer.getOriginY(), mPlayer.getPlayerRadius(), object.getOriginX(), object.getOriginY(), object.getSize())) {
                 gameObjectsList.remove(object);
+                performHapticFeedback(KEYBOARD_TAP);
                 switch (object.getPower()) {
                     case GROW:
                         countPowerGrow++;
@@ -255,8 +257,12 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             mScreenCanvas = mSurfaceHolder.lockCanvas();
 
             mScreenCanvas.drawColor(ColorUtil.COLOR_DARK_OVERLAY);
-            mScreenCanvas.drawText("GAME OVER", mWidth / 2, mHeight / 2, mHUDTextPaint);
-            mScreenCanvas.drawText("tap to restart", mWidth / 2, mHeight / 2 + 100, mHUDTextPaint);
+            mHUDTextPaint.setTextSize(mHUDHeight * 3);
+            mScreenCanvas.drawText("GAME OVER", mWidth / 2, (mHeight / 2) - (mHUDHeight * 3), mHUDTextPaint);
+            mHUDTextPaint.setTextSize(mHUDHeight * 2);
+            mScreenCanvas.drawText("SCORE:" + gameTime / 1000, mWidth / 2, mHeight / 2, mHUDTextPaint);
+            mHUDTextPaint.setTextSize(mHUDHeight);
+            mScreenCanvas.drawText("tap to restart", mWidth / 2, mHeight / 2 + (mHUDHeight * 2), mHUDTextPaint);
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
         }
         pause();
