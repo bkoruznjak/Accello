@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 100% opacity -->
+    <color name="powerUpGrow100">#FFBD3D33</color>
+    <color name="powerUpShrink100">#FF088898</color>
+    <color name="powerUpSpeed100">#FF76A73F</color>
+    <color name="powerUpInvert100">#FF673AB7</color>
+    <color name="powerUpNeutral100">#FF9A9A9A</color>
+
+    <color name="player100">#FF9E9E9E</color>
+    <color name="background100">#FF141414</color>
+    <color name="uiText100">#FFFFFFFF</color>
+
+    <!-- 80% opacity -->
+    <color name="powerUpGrow80">#DDBD3D33</color>
+    <color name="powerUpShrink80">#DD088898</color>
+    <color name="powerUpSpeed80">#DD76A73F</color>
+    <color name="powerUpInvert80">#DD673AB7</color>
+    <color name="powerUpNeutral80">#DD9A9A9A</color>
+
+    <color name="player80">#DD9E9E9E</color>
+    <color name="background80">#DD141414</color>
+    <color name="uiText80">#DDFFFFFF</color>
+</resources>

@@ -1,6 +1,6 @@
 package com.example.borna.accello.obstacles;
 
-import android.graphics.Color;
+import com.example.borna.accello.util.ColorUtil;
 
 /**
  * Created by bkoruznjak on 19/04/2017.
@@ -8,6 +8,7 @@ import android.graphics.Color;
 
 public class PowerUp extends GameObject {
 
+    private static final int ALPHA = 222;
     private final float MAX_SIZE;
     private boolean isUsable;
     private ObjectPower mPower;
@@ -17,7 +18,9 @@ public class PowerUp extends GameObject {
         super(originX, originY);
         mPower = ObjectPower.UNKNOWN;
         MAX_SIZE = maxSize;
-        pickupSizeTreshold = maxSize / 2;
+        pickupSizeTreshold = maxSize;
+        mPaint.setAntiAlias(true);
+        mPaint.setAlpha(ALPHA);
     }
 
     public PowerUp(int originX, int originY, int maxSize, ObjectPower power) {
@@ -30,19 +33,19 @@ public class PowerUp extends GameObject {
         if (size == pickupSizeTreshold) {
             switch (mPower) {
                 case UNKNOWN:
-                    mPaint.setColor(Color.GRAY);
+                    mPaint.setColor(ColorUtil.COLOR_PLAYER);
                     break;
                 case GROW:
-                    mPaint.setColor(Color.RED);
+                    mPaint.setColor(ColorUtil.COLOR_GROW);
                     break;
                 case SHRINK:
-                    mPaint.setColor(Color.BLUE);
+                    mPaint.setColor(ColorUtil.COLOR_SHRINK);
                     break;
                 case SPEED_UP:
-                    mPaint.setColor(Color.YELLOW);
+                    mPaint.setColor(ColorUtil.COLOR_SPEED_UP);
                     break;
                 case INVERT_CONTROL:
-                    mPaint.setColor(Color.GREEN);
+                    mPaint.setColor(ColorUtil.COLOR_INVERT_CONTROL);
                     break;
             }
 

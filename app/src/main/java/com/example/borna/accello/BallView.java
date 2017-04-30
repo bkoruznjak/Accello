@@ -2,7 +2,6 @@ package com.example.borna.accello;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.hardware.Sensor;
@@ -19,6 +18,7 @@ import android.view.View;
 import com.example.borna.accello.obstacles.GameObject;
 import com.example.borna.accello.obstacles.PlayerObject;
 import com.example.borna.accello.obstacles.PowerUp;
+import com.example.borna.accello.util.ColorUtil;
 import com.example.borna.accello.util.GeometryUtil;
 
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         this.mSurfaceHolder = getHolder();
         mUiPaint = new Paint();
         mUiPaint.setAntiAlias(true);
-        mUiPaint.setColor(Color.RED);
+        mUiPaint.setColor(ColorUtil.COLOR_TEXT);
         mUiPaint.setTextAlign(Paint.Align.CENTER);
         mUiPaint.setTextSize(100);
 
@@ -115,7 +115,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
 
         mActualBallRadius = (int) (BALL_RADIUS * mScreenWidthOnePercent);
         mPlayerObjectPaint = new Paint();
-        mPlayerObjectPaint.setColor(Color.MAGENTA);
+        mPlayerObjectPaint.setColor(ColorUtil.COLOR_PLAYER);
         mPlayerObjectPaint.setAntiAlias(true);
         mPlayerObjectPaint.setStyle(Paint.Style.FILL);
 
@@ -227,7 +227,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             mScreenCanvas = mSurfaceHolder.lockCanvas();
 
             // Rub out the last frame
-            mScreenCanvas.drawColor(Color.argb(255, 255, 255, 255));
+            mScreenCanvas.drawColor(ColorUtil.COLOR_BACKGROUND);
 
             for (int index = 0; index < gameObjectsList.size(); index++) {
                 GameObject object = gameObjectsList.get(index);
@@ -266,6 +266,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     }
 
     public void resume() {
+        mGameTimeStart = System.currentTimeMillis();
         running = true;
         drawingThread = new Thread(this);
         drawingThread.start();
@@ -289,7 +290,6 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             mObjectSpawnedCounter = 0;
             mRespawnCooldownHolder = 0;
             mPlayer.resetPlayer();
-            mGameTimeStart = System.currentTimeMillis();
             resume();
         }
         return false;
