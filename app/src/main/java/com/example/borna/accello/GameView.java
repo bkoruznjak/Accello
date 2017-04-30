@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.EmbossMaskFilter;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -42,45 +41,44 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
 
     private static final int TARGET_FPS = 60;
     private final int BALL_RADIUS = 5;
-    private int mPowerUpMaxSize;
-    private int mWidth;
-    private int mHeight;
+
+    private Context mContext;
+    private SharedPreferences mPrefs;
+    private SurfaceHolder mSurfaceHolder;
+    private Thread drawingThread = null;
+    private Canvas mScreenCanvas;
+    private ArrayList<PowerUp> gameObjectsList = new ArrayList<>();
+    private Paint mPlayerObjectPaint;
+    private Paint mPowerUpPaint;
+    private Paint mHUDTextPaint;
+    private Paint mHUDPaint;
+    private PlayerObject mPlayer;
+
+    private volatile boolean running;
+    private boolean readyToRun;
+
+    private float[] gyroCoordinates = new float[2];
     private float mScreenWidthOnePercent;
     private float mActualBallRadius;
     private float mTargetFrameDrawTime;
-    private SurfaceHolder mSurfaceHolder;
+    private float gameTime;
+    private float mHighScore;
+    private long mRespawnCooldownHolder = 0;
     private long mTimeStartCurrentFrame;
     private long mDelta;
     private long mTimeEndCurrentFrame;
     private long mTimeSleepInMillis;
     private long mGameTimeStart;
-    private Thread drawingThread = null;
-    private Canvas mScreenCanvas;
-    private volatile boolean running;
-    private float[] gyroCoordinates = new float[2];
-    private long mRespawnCooldownHolder = 0;
-    private ArrayList<PowerUp> gameObjectsList = new ArrayList<>();
     private int mMaxScreenSize;
-    private Rect mViewRect;
     private int mObjectSpawnedCounter;
-    private Paint mPlayerObjectPaint;
-    private PlayerObject mPlayer;
-    private boolean readyToRun;
-    private Paint mHUDTextPaint;
+    private int mPowerUpMaxSize;
+    private int mWidth;
+    private int mHeight;
     private int mHUDHeight;
-    private Paint mHUDPaint;
-
     private int countPowerShrink;
     private int countPowerGrow;
     private int countPowerSpeed;
     private int countPowerInvert;
-    private Paint mPowerUpPaint;
-    private float gameTime;
-
-    private Context mContext;
-    private SharedPreferences mPrefs;
-    private float mHighScore;
-
 
     public GameView(Context context) {
         super(context);
@@ -140,7 +138,6 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         mWidth = w;
         mHeight = h;
 
-        mViewRect = new Rect(0, 0, w, h);
         if (mWidth > mHeight) {
             mScreenWidthOnePercent = mHeight / 100.0f;
             mMaxScreenSize = mHeight / 2;
@@ -289,7 +286,6 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         if (mSurfaceHolder.getSurface().isValid()) {
             //Get start time for FPS calculation
             mTimeStartCurrentFrame = System.nanoTime() / 1000000;
-            //First we lock the area of memory we will be drawing to
             mScreenCanvas = mSurfaceHolder.lockCanvas();
 
             // Rub out the last frame
@@ -321,9 +317,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             mScreenCanvas.drawCircle(mHUDHeight * 7, mHeight - (mHUDHeight / 2), mHUDHeight / 3, mPowerUpPaint);
             mScreenCanvas.drawText("" + countPowerInvert, mHUDHeight * 8, mHeight - (mHUDHeight / 3), mHUDPaint);
 
-            // Unlock and draw the scene
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
-            //Get end time for FPS calcualtion
+            //Get end time for FPS calculation
             mTimeEndCurrentFrame = System.nanoTime() / 1000000;
         }
     }
