@@ -210,8 +210,6 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         //loop through and see if you touch them or not
         for (int index = 0; index < gameObjectsList.size(); index++) {
             PowerUp object = gameObjectsList.get(index);
-            Log.d("bbb", "object usable:" + object.isUsable());
-            Log.d("bbb", "areCirclesOverlapping:" + GeometryUtil.areCirclesOverlapping(mPlayer.getOriginX(), mPlayer.getOriginY(), mPlayer.getPlayerRadius(), object.getOriginX(), object.getOriginY(), object.getSize()));
             if (object.isUsable() && GeometryUtil.areCirclesOverlapping(mPlayer.getOriginX(), mPlayer.getOriginY(), mPlayer.getPlayerRadius(), object.getOriginX(), object.getOriginY(), object.getSize())) {
                 gameObjectsList.remove(object);
                 switch (object.getPower()) {
