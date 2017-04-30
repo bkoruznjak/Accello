@@ -212,6 +212,8 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             mTimeStartCurrentFrame = System.nanoTime() / 1000000;
             //First we lock the area of memory we will be drawing to
             mScreenCanvas = mSurfaceHolder.lockCanvas();
+
+            mScreenCanvas.drawColor(ColorUtil.COLOR_DARK_OVERLAY);
             mScreenCanvas.drawText("GAME OVER", mWidth / 2, mHeight / 2, mUiPaint);
             mScreenCanvas.drawText("tap to restart", mWidth / 2, mHeight / 2 + 100, mUiPaint);
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);

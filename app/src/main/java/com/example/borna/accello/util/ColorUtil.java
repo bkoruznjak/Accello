@@ -13,6 +13,8 @@ public class ColorUtil {
     public static final int COLOR_INVERT_CONTROL = Color.parseColor("#FF673AB7");
     public static final int COLOR_NEUTRAL = Color.parseColor("#FF9A9A9A");
 
+
+    public static final int COLOR_DARK_OVERLAY = Color.parseColor("#AA000000");
     public static final int COLOR_PLAYER = Color.parseColor("#FF9E9E9E");
     public static final int COLOR_BACKGROUND = Color.parseColor("#FF141414");
     public static final int COLOR_TEXT = Color.parseColor("#FFFFFFFF");

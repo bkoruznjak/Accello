@@ -1,5 +1,7 @@
 package com.example.borna.accello.obstacles;
 
+import android.graphics.EmbossMaskFilter;
+
 import com.example.borna.accello.util.ColorUtil;
 
 /**
@@ -19,8 +21,10 @@ public class PowerUp extends GameObject {
         mPower = ObjectPower.UNKNOWN;
         MAX_SIZE = maxSize;
         pickupSizeTreshold = maxSize;
+        EmbossMaskFilter embossfilter = new EmbossMaskFilter(new float[]{1, 1, 1}, 0.5f, 0.6f, 2f);
         mPaint.setAntiAlias(true);
         mPaint.setAlpha(ALPHA);
+        mPaint.setMaskFilter(embossfilter);
     }
 
     public PowerUp(int originX, int originY, int maxSize, ObjectPower power) {
