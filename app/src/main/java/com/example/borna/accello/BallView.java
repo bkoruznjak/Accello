@@ -167,7 +167,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             } else {
                 newObject.setPower(SHRINK);
             }
-            gameObjectsList.add(newObject);
+            gameObjectsList.add(0, newObject);
         }
 
         //loop through and see if you touch them or not
