@@ -281,7 +281,9 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             //HUD
             mScreenCanvas.drawLine(0, 0, mWidth, 0, mHUDPaint);
             mScreenCanvas.drawLine(0, mHeight - mHUDHeight, mWidth, mHeight - mHUDHeight, mHUDPaint);
-            mScreenCanvas.drawText("time:" + gameTime / 1000, mWidth / 2, mHeight - (mHUDHeight / 3), mHUDPaint);
+            mHUDPaint.setTextAlign(Paint.Align.LEFT);
+            mScreenCanvas.drawText("SCORE : " + gameTime / 1000, mWidth / 2, mHeight - (mHUDHeight / 3), mHUDPaint);
+            mHUDPaint.setTextAlign(Paint.Align.CENTER);
             mPowerUpPaint.setColor(ColorUtil.COLOR_GROW);
             mScreenCanvas.drawCircle(mHUDHeight, mHeight - (mHUDHeight / 2), mHUDHeight / 3, mPowerUpPaint);
             mScreenCanvas.drawText("" + countPowerGrow, mHUDHeight * 2, mHeight - (mHUDHeight / 3), mHUDPaint);
