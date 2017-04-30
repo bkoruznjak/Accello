@@ -19,13 +19,13 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        mBinding.mainView.resume();
+        mBinding.gameView.start(this);
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mBinding.mainView.pause();
+        mBinding.gameView.pause();
     }
 }

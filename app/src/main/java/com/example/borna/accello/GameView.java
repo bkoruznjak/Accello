@@ -1,6 +1,7 @@
 package com.example.borna.accello;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.EmbossMaskFilter;
 import android.graphics.Paint;
@@ -21,6 +22,7 @@ import com.example.borna.accello.obstacles.PlayerObject;
 import com.example.borna.accello.obstacles.PowerUp;
 import com.example.borna.accello.util.ColorUtil;
 import com.example.borna.accello.util.GeometryUtil;
+import com.example.borna.accello.util.StringConstants;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -73,6 +75,11 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     private int countPowerInvert;
     private Paint mPowerUpPaint;
     private float gameTime;
+
+    private Context mContext;
+    private SharedPreferences mPrefs;
+    private float mHighScore;
+
 
     public GameView(Context context) {
         super(context);
@@ -250,6 +257,14 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
     }
 
     private void endGame() {
+
+        String scoreText = "SCORE : ";
+
+        if (gameTime > mHighScore && mPrefs != null) {
+            mPrefs.edit().putFloat(StringConstants.PREF_HIGHSCORE, gameTime).apply();
+            scoreText = "NEW HIGHSCORE : ";
+        }
+
         if (mSurfaceHolder.getSurface().isValid()) {
             //Get start time for FPS calculation
             mTimeStartCurrentFrame = System.nanoTime() / 1000000;
@@ -260,7 +275,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             mHUDTextPaint.setTextSize(mHUDHeight * 3);
             mScreenCanvas.drawText("GAME OVER", mWidth / 2, (mHeight / 2) - (mHUDHeight * 3), mHUDTextPaint);
             mHUDTextPaint.setTextSize(mHUDHeight * 2);
-            mScreenCanvas.drawText("SCORE : " + gameTime / 1000, mWidth / 2, mHeight / 2, mHUDTextPaint);
+            mScreenCanvas.drawText(scoreText + gameTime / 1000, mWidth / 2, mHeight / 2, mHUDTextPaint);
             mHUDTextPaint.setTextSize(mHUDHeight);
             mScreenCanvas.drawText("tap to restart", mWidth / 2, mHeight / 2 + (mHUDHeight * 2), mHUDTextPaint);
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
@@ -289,6 +304,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             mScreenCanvas.drawLine(0, mHeight - mHUDHeight, mWidth, mHeight - mHUDHeight, mHUDPaint);
             mHUDPaint.setTextAlign(Paint.Align.LEFT);
             mScreenCanvas.drawText("SCORE : " + gameTime / 1000, mWidth / 2, mHeight - (mHUDHeight / 3), mHUDPaint);
+            mScreenCanvas.drawText("HIGHSCORE : " + mHighScore / 1000, (int) (mWidth / 1.5), mHeight - (mHUDHeight / 3), mHUDPaint);
             mHUDPaint.setTextAlign(Paint.Align.CENTER);
             mPowerUpPaint.setColor(ColorUtil.COLOR_GROW);
             mScreenCanvas.drawCircle(mHUDHeight, mHeight - (mHUDHeight / 2), mHUDHeight / 3, mPowerUpPaint);
@@ -334,8 +350,15 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         }
     }
 
+    public void start(Context context) {
+        this.mContext = context;
+        mPrefs = mContext.getSharedPreferences(StringConstants.APP_NAME, Context.MODE_PRIVATE);
+        resume();
+    }
+
     public void resume() {
         mGameTimeStart = System.currentTimeMillis();
+        mHighScore = mPrefs.getFloat(StringConstants.PREF_HIGHSCORE, 0.0f);
         running = true;
         drawingThread = new Thread(this);
         drawingThread.start();
