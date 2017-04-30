@@ -69,12 +69,10 @@ public class PlayerObject extends GameObject {
                 isShrinkingRadidly = true;
                 break;
             case SPEED_UP:
-                isShrinkingNormally = true;
                 isShrinkingRadidly = true;
                 isFast = true;
                 break;
             case INVERT_CONTROL:
-                isShrinkingNormally = true;
                 areControlsInverted = true;
                 break;
             case RESET:

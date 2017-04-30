@@ -11,12 +11,13 @@ public class PowerUp extends GameObject {
     private final float MAX_SIZE;
     private boolean isUsable;
     private ObjectPower mPower;
-    private float pickupSizeTreshold = 25;
+    private float pickupSizeTreshold;
 
     public PowerUp(int originX, int originY, int maxSize) {
         super(originX, originY);
         mPower = ObjectPower.UNKNOWN;
         MAX_SIZE = maxSize;
+        pickupSizeTreshold = maxSize / 2;
     }
 
     public PowerUp(int originX, int originY, int maxSize, ObjectPower power) {

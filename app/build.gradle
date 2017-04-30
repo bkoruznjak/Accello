@@ -6,7 +6,7 @@ android {
     dataBinding.enabled = true
     defaultConfig {
         applicationId "hr.from.bkoruznjak.accello"
-        minSdkVersion 19
+        minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"

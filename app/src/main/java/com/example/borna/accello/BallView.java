@@ -22,7 +22,7 @@ import com.example.borna.accello.obstacles.PowerUp;
 import com.example.borna.accello.util.GeometryUtil;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static com.example.borna.accello.obstacles.ObjectPower.GROW;
 import static com.example.borna.accello.obstacles.ObjectPower.INVERT_CONTROL;
@@ -36,8 +36,8 @@ import static com.example.borna.accello.obstacles.ObjectPower.SPEED_UP;
 public class BallView extends SurfaceView implements Runnable, SensorEventListener, View.OnTouchListener {
 
     private static final int TARGET_FPS = 60;
-    private static final int POWERUP_MAX_SIZE = 50;
     private final int BALL_RADIUS = 5;
+    private int mPowerUpMaxSize;
     private int mWidth;
     private int mHeight;
     private float mScreenWidthOnePercent;
@@ -120,6 +120,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         mPlayerObjectPaint.setAntiAlias(true);
         mPlayerObjectPaint.setStyle(Paint.Style.FILL);
 
+        mPowerUpMaxSize = (int) mScreenWidthOnePercent * 5;
         mPlayer = new PlayerObject(mWidth / 2, mHeight / 2, mActualBallRadius, (int) (mScreenWidthOnePercent / 50.0f));
         mPlayer.setPaint(mPlayerObjectPaint);
         mPlayer.setHeightBoundary(mHeight);
@@ -143,25 +144,13 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         if (mWidth > 0 && mHeight > 0 && System.currentTimeMillis() - mGameTimeStart > mRespawnCooldownHolder) {
             mObjectSpawnedCounter++;
             mRespawnCooldownHolder += 1000;
-            Random rnd = new Random();
 
-            int spawnX = rnd.nextInt(mWidth);
-            int spawnY = rnd.nextInt(mHeight);
+            //API lvl 21
+            int spawnX = ThreadLocalRandom.current().nextInt(mPowerUpMaxSize, mWidth - mPowerUpMaxSize);
+            int spawnY = ThreadLocalRandom.current().nextInt(mPowerUpMaxSize, mHeight - mPowerUpMaxSize);
 
-            //we add a bit of margin equal to the max size of the object
-            if (spawnX <= POWERUP_MAX_SIZE) {
-                spawnX += POWERUP_MAX_SIZE;
-            } else if (spawnX >= mWidth - POWERUP_MAX_SIZE) {
-                spawnX -= POWERUP_MAX_SIZE;
-            }
 
-            if (spawnY <= POWERUP_MAX_SIZE) {
-                spawnY += POWERUP_MAX_SIZE;
-            } else if (spawnY >= mHeight - POWERUP_MAX_SIZE) {
-                spawnY -= POWERUP_MAX_SIZE;
-            }
-
-            PowerUp newObject = new PowerUp(spawnX, spawnY, POWERUP_MAX_SIZE);
+            PowerUp newObject = new PowerUp(spawnX, spawnY, mPowerUpMaxSize);
             /*
             balance consideration:
 
