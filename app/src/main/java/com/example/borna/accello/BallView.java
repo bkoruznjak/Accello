@@ -96,7 +96,6 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             }
         }
 
-        mGameTimeStart = System.currentTimeMillis();
     }
 
     @Override
@@ -177,18 +176,18 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             if (object.isUsable() && GeometryUtil.areCirclesOverlapping(mPlayer.getOriginX(), mPlayer.getOriginY(), mPlayer.getPlayerRadius(), object.getOriginX(), object.getOriginY(), object.getSize())) {
                 gameObjectsList.remove(object);
                 switch (object.getPower()) {
-                    case GROW:
-                        mPlayer.triggerRapidGrowth();
-                        break;
-                    case SPEED_UP:
-                        mPlayer.triggerSpeedUp();
-                        break;
-                    case INVERT_CONTROL:
-                        mPlayer.triggerInvertControl();
-                        break;
-                    case SHRINK:
-                        mPlayer.triggerRapidShrink();
-                        break;
+//                    case GROW:
+//                        mPlayer.triggerRapidGrowth();
+//                        break;
+//                    case SPEED_UP:
+//                        mPlayer.triggerSpeedUp();
+//                        break;
+//                    case INVERT_CONTROL:
+//                        mPlayer.triggerInvertControl();
+//                        break;
+//                    case SHRINK:
+//                        mPlayer.triggerRapidShrink();
+//                        break;
                     default:
                         //FOR FAST END GAME UI DEBUG
                         mPlayer.triggerRapidGrowth();
@@ -287,7 +286,10 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     public boolean onTouch(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN && !running) {
             gameObjectsList.clear();
+            mObjectSpawnedCounter = 0;
+            mRespawnCooldownHolder = 0;
             mPlayer.resetPlayer();
+            mGameTimeStart = System.currentTimeMillis();
             resume();
         }
         return false;
