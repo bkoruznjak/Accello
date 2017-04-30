@@ -35,7 +35,7 @@ import static com.example.borna.accello.obstacles.ObjectPower.SPEED_UP;
  * Created by bkoruznjak on 16/03/2017.
  */
 
-public class BallView extends SurfaceView implements Runnable, SensorEventListener, View.OnTouchListener {
+public class GameView extends SurfaceView implements Runnable, SensorEventListener, View.OnTouchListener {
 
     private static final int TARGET_FPS = 60;
     private final int BALL_RADIUS = 5;
@@ -74,12 +74,12 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     private Paint mPowerUpPaint;
     private float gameTime;
 
-    public BallView(Context context) {
+    public GameView(Context context) {
         super(context);
         init();
     }
 
-    public BallView(Context context, AttributeSet attrs) {
+    public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
     }
@@ -260,7 +260,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             mHUDTextPaint.setTextSize(mHUDHeight * 3);
             mScreenCanvas.drawText("GAME OVER", mWidth / 2, (mHeight / 2) - (mHUDHeight * 3), mHUDTextPaint);
             mHUDTextPaint.setTextSize(mHUDHeight * 2);
-            mScreenCanvas.drawText("SCORE:" + gameTime / 1000, mWidth / 2, mHeight / 2, mHUDTextPaint);
+            mScreenCanvas.drawText("SCORE : " + gameTime / 1000, mWidth / 2, mHeight / 2, mHUDTextPaint);
             mHUDTextPaint.setTextSize(mHUDHeight);
             mScreenCanvas.drawText("tap to restart", mWidth / 2, mHeight / 2 + (mHUDHeight * 2), mHUDTextPaint);
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);

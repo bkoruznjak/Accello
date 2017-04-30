@@ -7,7 +7,7 @@
         android:background="#ffffff"
         tools:context=".MainActivity">
 
-        <com.example.borna.accello.BallView
+        <com.example.borna.accello.GameView
             android:id="@+id/mainView"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
