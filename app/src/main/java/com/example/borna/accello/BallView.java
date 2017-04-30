@@ -162,14 +162,23 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             }
 
             PowerUp newObject = new PowerUp(spawnX, spawnY, POWERUP_MAX_SIZE);
+            /*
+            balance consideration:
+
+            on a 1000 item spawn we will have:
+                    250 Speed ups
+                    250 Control inversions
+                    167 Rapid grows
+                    333 Shrinks
+             */
             if (mObjectSpawnedCounter % 4 == 0) {
-                newObject.setPower(GROW);
-            } else if (mObjectSpawnedCounter % 3 == 0) {
                 newObject.setPower(SPEED_UP);
-            } else if (mObjectSpawnedCounter % 2 == 0) {
-                newObject.setPower(SHRINK);
-            } else {
+            } else if (mObjectSpawnedCounter % 3 == 0) {
                 newObject.setPower(INVERT_CONTROL);
+            } else if (mObjectSpawnedCounter % 2 == 0) {
+                newObject.setPower(GROW);
+            } else {
+                newObject.setPower(SHRINK);
             }
             gameObjectsList.add(newObject);
         }
