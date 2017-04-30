@@ -2,6 +2,7 @@ package com.example.borna.accello;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.EmbossMaskFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.hardware.Sensor;
@@ -114,8 +115,10 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         }
 
         mActualBallRadius = (int) (BALL_RADIUS * mScreenWidthOnePercent);
+        EmbossMaskFilter embossfilter = new EmbossMaskFilter(new float[]{1, 1, 1}, 0.3f, 8f, 20f);
         mPlayerObjectPaint = new Paint();
         mPlayerObjectPaint.setColor(ColorUtil.COLOR_PLAYER);
+        mPlayerObjectPaint.setMaskFilter(embossfilter);
         mPlayerObjectPaint.setAntiAlias(true);
         mPlayerObjectPaint.setStyle(Paint.Style.FILL);
 

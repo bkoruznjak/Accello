@@ -8,7 +8,7 @@
     <color name="powerUpInvert100">#FF673AB7</color>
     <color name="powerUpNeutral100">#FF9A9A9A</color>
 
-    <color name="player100">#FF9E9E9E</color>
+    <color name="player100">#FFD6D6D6</color>
     <color name="background100">#FF141414</color>
     <color name="uiText100">#FFFFFFFF</color>
 
@@ -19,7 +19,7 @@
     <color name="powerUpInvert80">#DD673AB7</color>
     <color name="powerUpNeutral80">#DD9A9A9A</color>
 
-    <color name="player80">#DD9E9E9E</color>
+    <color name="player80">#DDD6D6D6</color>
     <color name="background80">#DD141414</color>
     <color name="uiText80">#DDFFFFFF</color>
 </resources>

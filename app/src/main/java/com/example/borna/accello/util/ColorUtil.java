@@ -15,7 +15,7 @@ public class ColorUtil {
 
 
     public static final int COLOR_DARK_OVERLAY = Color.parseColor("#AA000000");
-    public static final int COLOR_PLAYER = Color.parseColor("#FF9E9E9E");
+    public static final int COLOR_PLAYER = Color.parseColor("#FFA6A6A6");
     public static final int COLOR_BACKGROUND = Color.parseColor("#FF141414");
     public static final int COLOR_TEXT = Color.parseColor("#FFFFFFFF");
 }

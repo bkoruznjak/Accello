@@ -21,7 +21,7 @@ public class PowerUp extends GameObject {
         mPower = ObjectPower.UNKNOWN;
         MAX_SIZE = maxSize;
         pickupSizeTreshold = maxSize;
-        EmbossMaskFilter embossfilter = new EmbossMaskFilter(new float[]{1, 1, 1}, 0.5f, 0.6f, 2f);
+        EmbossMaskFilter embossfilter = new EmbossMaskFilter(new float[]{1, 1, 1}, 0.5f, 0.6f, 4f);
         mPaint.setAntiAlias(true);
         mPaint.setAlpha(ALPHA);
         mPaint.setMaskFilter(embossfilter);
