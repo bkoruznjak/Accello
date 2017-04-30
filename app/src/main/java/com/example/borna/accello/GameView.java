@@ -21,6 +21,7 @@ import com.example.borna.accello.obstacles.GameObject;
 import com.example.borna.accello.obstacles.PlayerObject;
 import com.example.borna.accello.obstacles.PowerUp;
 import com.example.borna.accello.util.ColorUtil;
+import com.example.borna.accello.util.GameHints;
 import com.example.borna.accello.util.GeometryUtil;
 import com.example.borna.accello.util.StringConstants;
 
@@ -277,7 +278,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
             mHUDTextPaint.setTextSize(mHUDHeight * 2);
             mScreenCanvas.drawText(scoreText + gameTime / 1000, mWidth / 2, mHeight / 2, mHUDTextPaint);
             mHUDTextPaint.setTextSize(mHUDHeight);
-            mScreenCanvas.drawText("tap to restart", mWidth / 2, mHeight / 2 + (mHUDHeight * 2), mHUDTextPaint);
+            mScreenCanvas.drawText(GameHints.getRandomGameHint(), mWidth / 2, mHeight / 2 + (mHUDHeight * 2), mHUDTextPaint);
+            mScreenCanvas.drawText("tap to restart", mWidth / 2, mHeight / 2 + (mHUDHeight * 4), mHUDTextPaint);
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
         }
         pause();
