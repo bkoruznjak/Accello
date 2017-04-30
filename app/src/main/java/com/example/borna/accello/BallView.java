@@ -70,6 +70,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     private int countPowerGrow;
     private int countPowerSpeed;
     private int countPowerInvert;
+    private Paint mPowerUpPaint;
     private float gameTime;
 
     public BallView(Context context) {
@@ -90,6 +91,10 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         mHUDTextPaint.setColor(ColorUtil.COLOR_TEXT);
         mHUDTextPaint.setTextAlign(Paint.Align.CENTER);
         mHUDTextPaint.setTextSize(100);
+
+        mPowerUpPaint = new Paint();
+        mPowerUpPaint.setAntiAlias(true);
+        mPowerUpPaint.setStyle(Paint.Style.FILL);
 
         setOnTouchListener(this);
 
@@ -139,7 +144,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         mHUDHeight = (int) (5 * mScreenWidthOnePercent);
         mHUDPaint = new Paint();
         mHUDPaint.setAntiAlias(true);
-        mHUDPaint.setColor(ColorUtil.COLOR_GROW);
+        mHUDPaint.setColor(ColorUtil.COLOR_TEXT);
         mHUDPaint.setTextSize(mHUDHeight / 2);
         mHUDPaint.setTextAlign(Paint.Align.CENTER);
 
@@ -199,12 +204,14 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             } else {
                 newObject.setPower(SHRINK);
             }
-            gameObjectsList.add(0, newObject);
+            gameObjectsList.add(newObject);
         }
 
         //loop through and see if you touch them or not
         for (int index = 0; index < gameObjectsList.size(); index++) {
             PowerUp object = gameObjectsList.get(index);
+            Log.d("bbb", "object usable:" + object.isUsable());
+            Log.d("bbb", "areCirclesOverlapping:" + GeometryUtil.areCirclesOverlapping(mPlayer.getOriginX(), mPlayer.getOriginY(), mPlayer.getPlayerRadius(), object.getOriginX(), object.getOriginY(), object.getSize()));
             if (object.isUsable() && GeometryUtil.areCirclesOverlapping(mPlayer.getOriginX(), mPlayer.getOriginY(), mPlayer.getPlayerRadius(), object.getOriginX(), object.getOriginY(), object.getSize())) {
                 gameObjectsList.remove(object);
                 switch (object.getPower()) {
@@ -274,11 +281,21 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             mScreenCanvas.drawCircle(mPlayer.getOriginX(), mPlayer.getOriginY(), mPlayer.getPlayerRadius(), mPlayer.getPaint());
 
             //HUD
-//            mScreenCanvas.drawRect(0, 0, mWidth, mHeight, mHUDPaint);
+            mScreenCanvas.drawLine(0, 0, mWidth, 0, mHUDPaint);
             mScreenCanvas.drawLine(0, mHeight - mHUDHeight, mWidth, mHeight - mHUDHeight, mHUDPaint);
-
-            mScreenCanvas.drawText("time:" + gameTime / 1000, mWidth / 2, mHeight - (mHUDHeight / 2), mHUDPaint);
-
+            mScreenCanvas.drawText("time:" + gameTime / 1000, mWidth / 2, mHeight - (mHUDHeight / 3), mHUDPaint);
+            mPowerUpPaint.setColor(ColorUtil.COLOR_GROW);
+            mScreenCanvas.drawCircle(mHUDHeight, mHeight - (mHUDHeight / 2), mHUDHeight / 3, mPowerUpPaint);
+            mScreenCanvas.drawText("" + countPowerGrow, mHUDHeight * 2, mHeight - (mHUDHeight / 3), mHUDPaint);
+            mPowerUpPaint.setColor(ColorUtil.COLOR_SHRINK);
+            mScreenCanvas.drawCircle(mHUDHeight * 3, mHeight - (mHUDHeight / 2), mHUDHeight / 3, mPowerUpPaint);
+            mScreenCanvas.drawText("" + countPowerShrink, mHUDHeight * 4, mHeight - (mHUDHeight / 3), mHUDPaint);
+            mPowerUpPaint.setColor(ColorUtil.COLOR_SPEED_UP);
+            mScreenCanvas.drawCircle(mHUDHeight * 5, mHeight - (mHUDHeight / 2), mHUDHeight / 3, mPowerUpPaint);
+            mScreenCanvas.drawText("" + countPowerSpeed, mHUDHeight * 6, mHeight - (mHUDHeight / 3), mHUDPaint);
+            mPowerUpPaint.setColor(ColorUtil.COLOR_INVERT_CONTROL);
+            mScreenCanvas.drawCircle(mHUDHeight * 7, mHeight - (mHUDHeight / 2), mHUDHeight / 3, mPowerUpPaint);
+            mScreenCanvas.drawText("" + countPowerInvert, mHUDHeight * 8, mHeight - (mHUDHeight / 3), mHUDPaint);
 
             // Unlock and draw the scene
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);

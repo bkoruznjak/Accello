@@ -34,7 +34,7 @@ public class PowerUp extends GameObject {
     }
 
     public void grow() {
-        if (size == pickupSizeTreshold) {
+        if (!isUsable && size >= pickupSizeTreshold) {
             switch (mPower) {
                 case UNKNOWN:
                     mPaint.setColor(ColorUtil.COLOR_PLAYER);
@@ -52,8 +52,6 @@ public class PowerUp extends GameObject {
                     mPaint.setColor(ColorUtil.COLOR_INVERT_CONTROL);
                     break;
             }
-
-        } else if (!isUsable && size > pickupSizeTreshold) {
             isUsable = true;
         }
 
