@@ -62,7 +62,9 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     private Paint mPlayerObjectPaint;
     private PlayerObject mPlayer;
     private boolean readyToRun;
-    private Paint mUiPaint;
+    private Paint mHUDTextPaint;
+    private int mHUDHeight;
+    private Paint mHUDPaint;
 
     public BallView(Context context) {
         super(context);
@@ -77,11 +79,11 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
     private void init() {
         this.mTargetFrameDrawTime = 1000f / TARGET_FPS;
         this.mSurfaceHolder = getHolder();
-        mUiPaint = new Paint();
-        mUiPaint.setAntiAlias(true);
-        mUiPaint.setColor(ColorUtil.COLOR_TEXT);
-        mUiPaint.setTextAlign(Paint.Align.CENTER);
-        mUiPaint.setTextSize(100);
+        mHUDTextPaint = new Paint();
+        mHUDTextPaint.setAntiAlias(true);
+        mHUDTextPaint.setColor(ColorUtil.COLOR_TEXT);
+        mHUDTextPaint.setTextAlign(Paint.Align.CENTER);
+        mHUDTextPaint.setTextSize(100);
 
         setOnTouchListener(this);
 
@@ -115,6 +117,13 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         }
 
         mActualBallRadius = (int) (BALL_RADIUS * mScreenWidthOnePercent);
+        mHUDPaint = new Paint();
+        mHUDPaint.setAntiAlias(true);
+        mHUDPaint.setColor(ColorUtil.COLOR_GROW);
+        mHUDPaint.setTextSize(100);
+        mHUDPaint.setStrokeWidth(mScreenWidthOnePercent);
+        mHUDPaint.setStyle(Paint.Style.STROKE);
+        mHUDHeight = (int) (5 * mScreenWidthOnePercent);
         EmbossMaskFilter embossfilter = new EmbossMaskFilter(new float[]{1, 1, 1}, 0.3f, 8f, 20f);
         mPlayerObjectPaint = new Paint();
         mPlayerObjectPaint.setColor(ColorUtil.COLOR_PLAYER);
@@ -125,7 +134,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         mPowerUpMaxSize = (int) mScreenWidthOnePercent * 5;
         mPlayer = new PlayerObject(mWidth / 2, mHeight / 2, mActualBallRadius, (int) (mScreenWidthOnePercent / 50.0f));
         mPlayer.setPaint(mPlayerObjectPaint);
-        mPlayer.setHeightBoundary(mHeight);
+        mPlayer.setHeightBoundary(mHeight - mHUDHeight);
         mPlayer.setWidthBoundary(mWidth);
         readyToRun = true;
     }
@@ -148,8 +157,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
 
             //API lvl 21
             int spawnX = ThreadLocalRandom.current().nextInt(mPowerUpMaxSize, mWidth - mPowerUpMaxSize);
-            int spawnY = ThreadLocalRandom.current().nextInt(mPowerUpMaxSize, mHeight - mPowerUpMaxSize);
-
+            int spawnY = ThreadLocalRandom.current().nextInt(mPowerUpMaxSize, mHeight - mPowerUpMaxSize - mHUDHeight);
 
             PowerUp newObject = new PowerUp(spawnX, spawnY, mPowerUpMaxSize);
             /*
@@ -202,7 +210,7 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
         }
 
         mPlayer.moveWithConstraints(gyroCoordinates[1] * 2, gyroCoordinates[0] * 2);
-        if (mPlayer.getPlayerRadius() + (mScreenWidthOnePercent / 50.0f) >= mMaxScreenSize) {
+        if (mPlayer.getPlayerRadius() + (mScreenWidthOnePercent / 50.0f) >= mMaxScreenSize - (mHUDHeight / 2)) {
             endGame();
         } else {
             mPlayer.live();
@@ -217,8 +225,8 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
             mScreenCanvas = mSurfaceHolder.lockCanvas();
 
             mScreenCanvas.drawColor(ColorUtil.COLOR_DARK_OVERLAY);
-            mScreenCanvas.drawText("GAME OVER", mWidth / 2, mHeight / 2, mUiPaint);
-            mScreenCanvas.drawText("tap to restart", mWidth / 2, mHeight / 2 + 100, mUiPaint);
+            mScreenCanvas.drawText("GAME OVER", mWidth / 2, mHeight / 2, mHUDTextPaint);
+            mScreenCanvas.drawText("tap to restart", mWidth / 2, mHeight / 2 + 100, mHUDTextPaint);
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
         }
         pause();
@@ -239,6 +247,10 @@ public class BallView extends SurfaceView implements Runnable, SensorEventListen
                 mScreenCanvas.drawCircle(object.getOriginX(), object.getOriginY(), object.getSize(), object.getPaint());
             }
             mScreenCanvas.drawCircle(mPlayer.getOriginX(), mPlayer.getOriginY(), mPlayer.getPlayerRadius(), mPlayer.getPaint());
+
+            //HUD
+            mScreenCanvas.drawRect(0, 0, mWidth, mHeight, mHUDPaint);
+
             // Unlock and draw the scene
             mSurfaceHolder.unlockCanvasAndPost(mScreenCanvas);
             //Get end time for FPS calcualtion
