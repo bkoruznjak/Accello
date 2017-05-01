@@ -1,4 +1,4 @@
-package com.example.borna.accello.obstacles;
+package hr.from.bkoruznjak.accello.obstacles;
 
 /**
  * Created by bkoruznjak on 22/04/2017.

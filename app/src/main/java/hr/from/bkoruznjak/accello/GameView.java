@@ -1,4 +1,4 @@
-package com.example.borna.accello;
+package hr.from.bkoruznjak.accello;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,22 +16,19 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
-import com.example.borna.accello.obstacles.GameObject;
-import com.example.borna.accello.obstacles.PlayerObject;
-import com.example.borna.accello.obstacles.PowerUp;
-import com.example.borna.accello.util.ColorUtil;
-import com.example.borna.accello.util.GameHints;
-import com.example.borna.accello.util.GeometryUtil;
-import com.example.borna.accello.util.StringConstants;
-
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
+import hr.from.bkoruznjak.accello.obstacles.GameObject;
+import hr.from.bkoruznjak.accello.obstacles.ObjectPower;
+import hr.from.bkoruznjak.accello.obstacles.PlayerObject;
+import hr.from.bkoruznjak.accello.obstacles.PowerUp;
+import hr.from.bkoruznjak.accello.util.ColorUtil;
+import hr.from.bkoruznjak.accello.util.GameHints;
+import hr.from.bkoruznjak.accello.util.GeometryUtil;
+import hr.from.bkoruznjak.accello.util.StringConstants;
+
 import static android.view.HapticFeedbackConstants.KEYBOARD_TAP;
-import static com.example.borna.accello.obstacles.ObjectPower.GROW;
-import static com.example.borna.accello.obstacles.ObjectPower.INVERT_CONTROL;
-import static com.example.borna.accello.obstacles.ObjectPower.SHRINK;
-import static com.example.borna.accello.obstacles.ObjectPower.SPEED_UP;
 
 /**
  * Created by bkoruznjak on 16/03/2017.
@@ -202,13 +199,13 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                     333 Shrinks
              */
             if (mObjectSpawnedCounter % 4 == 0) {
-                newObject.setPower(SPEED_UP);
+                newObject.setPower(ObjectPower.SPEED_UP);
             } else if (mObjectSpawnedCounter % 3 == 0) {
-                newObject.setPower(INVERT_CONTROL);
+                newObject.setPower(ObjectPower.INVERT_CONTROL);
             } else if (mObjectSpawnedCounter % 2 == 0) {
-                newObject.setPower(GROW);
+                newObject.setPower(ObjectPower.GROW);
             } else {
-                newObject.setPower(SHRINK);
+                newObject.setPower(ObjectPower.SHRINK);
             }
             gameObjectsList.add(newObject);
         }

@@ -1,4 +1,4 @@
-package com.example.borna.accello;
+package com.from.bkoruznjak.accello;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -1,4 +1,4 @@
-package com.example.borna.accello.util;
+package hr.from.bkoruznjak.accello.util;
 
 import android.graphics.Color;
 

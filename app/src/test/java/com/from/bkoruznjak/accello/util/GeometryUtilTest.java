@@ -1,6 +1,8 @@
-package com.example.borna.accello.util;
+package com.from.bkoruznjak.accello.util;
 
 import org.junit.Test;
+
+import hr.from.bkoruznjak.accello.util.GeometryUtil;
 
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;

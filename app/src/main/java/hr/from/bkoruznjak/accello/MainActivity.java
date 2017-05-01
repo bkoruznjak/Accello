@@ -1,10 +1,10 @@
-package com.example.borna.accello;
+package hr.from.bkoruznjak.accello;
 
 import android.app.Activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 
-import com.example.borna.accello.databinding.ActivityMainBinding;
+import hr.from.bkoruznjak.accello.databinding.ActivityMainBinding;
 
 public class MainActivity extends Activity {
 

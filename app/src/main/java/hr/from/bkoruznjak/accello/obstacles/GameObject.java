@@ -1,4 +1,4 @@
-package com.example.borna.accello.obstacles;
+package hr.from.bkoruznjak.accello.obstacles;
 
 import android.graphics.Color;
 import android.graphics.Paint;

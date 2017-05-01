@@ -1,8 +1,8 @@
-package com.example.borna.accello.obstacles;
+package hr.from.bkoruznjak.accello.obstacles;
 
 import android.graphics.EmbossMaskFilter;
 
-import com.example.borna.accello.util.ColorUtil;
+import hr.from.bkoruznjak.accello.util.ColorUtil;
 
 /**
  * Created by bkoruznjak on 19/04/2017.
