@@ -10,11 +10,12 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+
+import com.crashlytics.android.Crashlytics;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -104,13 +105,13 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
 
         SensorManager manager = (SensorManager) getContext().getSystemService(Context.SENSOR_SERVICE);
         if (manager.getSensorList(Sensor.TYPE_ACCELEROMETER).size() == 0) {
-            Log.e("bbb", " No accelerometer installed");
+            Crashlytics.log("No accelerometer installed");
         } else {
             Sensor accelerometer = manager.getSensorList(
                     Sensor.TYPE_ACCELEROMETER).get(0);
             if (!manager.registerListener(this, accelerometer,
                     SensorManager.SENSOR_DELAY_GAME)) {
-                Log.e("bbb", " Couldn't register sensor listener");
+                Crashlytics.log("Couldn't register sensor listener");
             }
         }
     }
@@ -330,7 +331,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
                 drawingThread.sleep(mTimeSleepInMillis);
             }
         } catch (InterruptedException e) {
-            Log.e("bbb", "InterruptedException:" + e);
+            Crashlytics.logException(e);
         }
 
     }
@@ -340,7 +341,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         try {
             drawingThread.join();
         } catch (InterruptedException e) {
-            Log.e("bbb", "InterruptedException:" + e);
+            Crashlytics.logException(e);
         }
     }
 
