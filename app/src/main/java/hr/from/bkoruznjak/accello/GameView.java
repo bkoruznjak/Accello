@@ -92,13 +92,13 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         this.mTargetFrameDrawTime = 1000f / TARGET_FPS;
         this.mSurfaceHolder = getHolder();
         mHUDTextPaint = new Paint();
-        mHUDTextPaint.setAntiAlias(true);
+        mHUDTextPaint.setAntiAlias(false);
         mHUDTextPaint.setColor(ColorUtil.COLOR_TEXT);
         mHUDTextPaint.setTextAlign(Paint.Align.CENTER);
         mHUDTextPaint.setTextSize(100);
 
         mPowerUpPaint = new Paint();
-        mPowerUpPaint.setAntiAlias(true);
+        mPowerUpPaint.setAntiAlias(false);
         mPowerUpPaint.setStyle(Paint.Style.FILL);
 
         setOnTouchListener(this);
@@ -147,7 +147,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         mActualBallRadius = (int) (BALL_RADIUS * mScreenWidthOnePercent);
         mHUDHeight = (int) (5 * mScreenWidthOnePercent);
         mHUDPaint = new Paint();
-        mHUDPaint.setAntiAlias(true);
+        mHUDPaint.setAntiAlias(false);
         mHUDPaint.setColor(ColorUtil.COLOR_TEXT);
         mHUDPaint.setTextSize(mHUDHeight / 2);
         mHUDPaint.setTextAlign(Paint.Align.CENTER);
@@ -156,7 +156,7 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         mPlayerObjectPaint = new Paint();
         mPlayerObjectPaint.setColor(ColorUtil.COLOR_PLAYER);
         mPlayerObjectPaint.setMaskFilter(embossfilter);
-        mPlayerObjectPaint.setAntiAlias(true);
+        mPlayerObjectPaint.setAntiAlias(false);
         mPlayerObjectPaint.setStyle(Paint.Style.FILL);
 
         mPowerUpMaxSize = (int) mScreenWidthOnePercent * 5;
