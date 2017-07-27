@@ -3,7 +3,6 @@ package hr.from.bkoruznjak.accello;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Canvas;
-import android.graphics.EmbossMaskFilter;
 import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -152,10 +151,8 @@ public class GameView extends SurfaceView implements Runnable, SensorEventListen
         mHUDPaint.setTextSize(mHUDHeight / 2);
         mHUDPaint.setTextAlign(Paint.Align.CENTER);
 
-        EmbossMaskFilter embossfilter = new EmbossMaskFilter(new float[]{1, 1, 1}, 0.3f, 8f, 20f);
         mPlayerObjectPaint = new Paint();
         mPlayerObjectPaint.setColor(ColorUtil.COLOR_PLAYER);
-        mPlayerObjectPaint.setMaskFilter(embossfilter);
         mPlayerObjectPaint.setAntiAlias(false);
         mPlayerObjectPaint.setStyle(Paint.Style.FILL);
 

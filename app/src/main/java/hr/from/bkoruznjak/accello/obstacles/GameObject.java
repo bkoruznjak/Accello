@@ -20,7 +20,7 @@ public class GameObject {
         this.size = 1;
         this.mPaint = new Paint();
         mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setAntiAlias(true);
+        mPaint.setAntiAlias(false);
         mPaint.setColor(Color.GRAY);
     }
 

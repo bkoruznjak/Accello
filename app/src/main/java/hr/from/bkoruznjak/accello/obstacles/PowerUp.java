@@ -1,7 +1,5 @@
 package hr.from.bkoruznjak.accello.obstacles;
 
-import android.graphics.EmbossMaskFilter;
-
 import hr.from.bkoruznjak.accello.util.ColorUtil;
 
 /**
@@ -21,10 +19,8 @@ public class PowerUp extends GameObject {
         mPower = ObjectPower.UNKNOWN;
         MAX_SIZE = maxSize;
         pickupSizeTreshold = maxSize;
-        EmbossMaskFilter embossfilter = new EmbossMaskFilter(new float[]{1, 1, 1}, 0.5f, 0.6f, 4f);
-        mPaint.setAntiAlias(true);
+        mPaint.setAntiAlias(false);
         mPaint.setAlpha(ALPHA);
-        mPaint.setMaskFilter(embossfilter);
     }
 
     public PowerUp(int originX, int originY, int maxSize, ObjectPower power) {
